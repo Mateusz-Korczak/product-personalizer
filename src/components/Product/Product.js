@@ -3,16 +3,30 @@ import clsx from 'clsx';
 import Button from '../Button/Button';
 import propTypes from 'prop-types';
 import { useState } from 'react';
-import shortid from 'shortid';
-const Product = ({ title, basePrice, colors, sizes, name, id }) => {
+const Product = ({ title, basePrice, colors, sizes, name }) => {
   const [currentColor, setCurrentColor] = useState(colors[0]);
-  const [currentSize, setCurrentSize] = useState(sizes[0].name);
+  const [currentSize, setCurrentSize] = useState(sizes[0]);
 
   const prepareColorClassName = (color) => {
     return styles[
       'color' + color[0].toUpperCase() + color.substr(1).toLowerCase()
     ];
   };
+
+  const getPrice = () => {
+    return (
+      basePrice +
+      sizes.find((element) => element === currentSize).additionalPrice
+    );
+  };
+
+  const consoleOrderInfo = `  Summary
+  ===========
+  Name: ${title}
+  Price: ${getPrice()}
+  Size: ${currentSize.name}
+  Color: ${currentColor}
+  `;
 
   return (
     <article className={styles.product}>
@@ -26,7 +40,7 @@ const Product = ({ title, basePrice, colors, sizes, name, id }) => {
       <div>
         <header>
           <h2 className={styles.name}>{title}</h2>
-          <span className={styles.price}>{basePrice}$</span>
+          <span className={styles.price}>Price: {getPrice()}$</span>
         </header>
         <form>
           <div className={styles.sizes}>
@@ -37,8 +51,13 @@ const Product = ({ title, basePrice, colors, sizes, name, id }) => {
                   <li key={index}>
                     <button
                       type='button'
-                      key={shortid.generate}
-                      className={size === sizes[0] && styles.active}
+                      className={clsx(
+                        size,
+                        size === currentSize && styles.active
+                      )}
+                      onClick={() => {
+                        setCurrentSize(sizes[index]);
+                      }}
                     >
                       {size.name}
                     </button>
@@ -50,20 +69,29 @@ const Product = ({ title, basePrice, colors, sizes, name, id }) => {
           <div className={styles.colors}>
             <h3 className={styles.optionLabel}>Colors</h3>
             <ul className={styles.choices}>
-              {colors.map((item) => (
+              {colors.map((item, index) => (
                 <li key={item}>
                   <button
                     type='button'
                     className={clsx(
                       prepareColorClassName(item),
-                      item === colors[0] && styles.active
+                      item === currentColor && styles.active
                     )}
+                    onClick={() => {
+                      setCurrentColor(colors[index]);
+                    }}
                   />
                 </li>
               ))}
             </ul>
           </div>
-          <Button className={styles.button}>
+          <Button
+            className={styles.button}
+            onClickHandler={(e) => {
+              e.preventDefault();
+              console.log(consoleOrderInfo);
+            }}
+          >
             <span className='fa fa-shopping-cart' />
           </Button>
         </form>
