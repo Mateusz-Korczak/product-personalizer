@@ -14,7 +14,6 @@ const Product = ({ title, basePrice, colors, sizes, name }) => {
     );
   }, [currentSize]);
 
-  console.log(typeof getPrice);
   return (
     <article className={styles.product}>
       <div className={styles.imageContainer}>
