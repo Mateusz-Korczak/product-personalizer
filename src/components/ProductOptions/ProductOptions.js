@@ -17,7 +17,7 @@ const ProductOptions = ({
   const consoleOrderInfo = `  Summary
   ===========
   Name: ${title}
-  Price: ${getPrice()}
+  Price: ${getPrice}
   Size: ${currentSize.name}
   Color: ${currentColor}
   `;
